@@ -2,16 +2,56 @@
 #include "std_msgs/String.h"
 #include <sensor_msgs/Range.h>
 //#include <stdr_robot/sensors/sonar.h>
-using namespace std;
+
 
 /**
  * This tutorial demonstrates simple receipt of messages over the ROS system.
  */
-void sonarCallback (sensor_msgs::Range msg)
+ 
+float min_range=10000000;
+int counter=0;
+std::string name;
+ 
+class Sub {
+	public: 
+		Sub(std::string topic_sonar);
+		float getRange();
+	private:
+		std::string name_sonar;
+		ros::NodeHandle n;
+		void sonarCallback(sensor_msgs::Range msg);
+		float sonar_range;
+		ros::Subscriber sub;
+		
+}; 
+
+Sub::Sub(std::string topic_sonar) {
+	 name_sonar=topic_sonar;
+	 sub = n.subscribe(topic_sonar, 1000, &Sub::sonarCallback, this);
+
+}	 	 
+	
+void Sub::sonarCallback (sensor_msgs::Range msg)
 {
-  //ROS_INFO( msg.data.c_str());
-  ROS_INFO("\tRange : %f",msg.range);
-  //cout << msg;
+  sonar_range= msg.range;
+  counter++;
+  
+  ROS_INFO("%s", name_sonar.c_str());
+  ROS_INFO("Range : %f",sonar_range);
+  
+  if(sonar_range < min_range)
+  {	
+		min_range= sonar_range;
+		//name=name_sonar;
+		name=msg.header.frame_id;	
+		
+  }
+  if (counter==4)
+  {
+	ROS_INFO("Min Range : %f",min_range);
+	ROS_INFO("Name : %s",name.c_str());
+	counter=0;
+  }
 }
 
 int main(int argc, char **argv)
@@ -26,14 +66,19 @@ int main(int argc, char **argv)
    * You must call one of the versions of ros::init() before using any other
    * part of the ROS system.
    */
-  ros::init(argc, argv, "sonar1_reader");
-
+  ros::init(argc, argv, "sonar_reader");
+  
+   Sub sub1("/robot0/sonar_1");
+   Sub sub2("/robot0/sonar_2");
+   Sub sub3("/robot0/sonar_3");
+   Sub sub4("/robot0/sonar_4");
+ 
   /**
    * NodeHandle is the main access point to communications with the ROS system.
    * The first NodeHandle constructed will fully initialize this node, and the last
    * NodeHandle destructed will close down the node.
    */
-  ros::NodeHandle n;
+  //ros::NodeHandle n;
 
   /**
    * The subscribe() call is how you tell ROS that you want to receive messages
@@ -50,7 +95,7 @@ int main(int argc, char **argv)
    * is the number of messages that will be buffered up before beginning to throw
    * away the oldest ones.
    */
-  ros::Subscriber sub = n.subscribe("/robot0/sonar_1", 1000, sonarCallback);
+ // ros::Subscriber sub = n.subscribe("/robot0/sonar_2", 1000, sonarCallback);
   
   /**
    * ros::spin() will enter a loop, pumping callbacks.  With this version, all
