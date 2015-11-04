@@ -1,7 +1,9 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include <sensor_msgs/Range.h>
-//#include <stdr_robot/sensors/sonar.h>
+#include <geometry_msgs/Twist.h>
+#include <tf/transform_listener.h>
+
 
 
 /**
@@ -15,19 +17,20 @@ std::string name;
 class Sub {
 	public: 
 		Sub(std::string topic_sonar);
-		float getRange();
 	private:
 		std::string name_sonar;
 		ros::NodeHandle n;
 		void sonarCallback(sensor_msgs::Range msg);
 		float sonar_range;
 		ros::Subscriber sub;
+		ros::Publisher pub;
 		
 }; 
 
 Sub::Sub(std::string topic_sonar) {
 	 name_sonar=topic_sonar;
 	 sub = n.subscribe(topic_sonar, 1000, &Sub::sonarCallback, this);
+	 pub = n.advertise<geometry_msgs::Twist>("/robot0/cmd_vel", 1000);
 
 }	 	 
 	
@@ -51,8 +54,48 @@ void Sub::sonarCallback (sensor_msgs::Range msg)
 	ROS_INFO("Min Range : %f",min_range);
 	ROS_INFO("Name : %s",name.c_str());
 	counter=0;
+	min_range=10000000;
+	geometry_msgs::Twist twist;
+	
+	if(name=="robot0_sonar_1")
+	{
+			twist.linear.x=-0.1;
+			twist.angular.z=0;
+	}
+	else if(name=="robot0_sonar_2")
+	{
+			twist.linear.x=0.1;
+			twist.angular.z=-0.1;
+	}
+	else if (name=="robot0_sonar_3")
+	{
+			twist.linear.x=0.1;
+			twist.angular.z=0;
+	}
+	else if (name=="robot0_sonar_4")
+	{
+			twist.linear.x=0.1;
+			twist.angular.z=0.1;
+	}
+	twist.linear.z=twist.linear.y=twist.angular.x = twist.angular.y = 0; 
+	pub.publish(twist);
+	
+
+	/**tf::TransformListener listener;
+	 
+    tf::StampedTransform transform;
+    try{
+      listener.lookupTransform("/robot0",name,ros::Time(0), transform);
+    }
+    catch (tf::TransformException ex){
+      ROS_ERROR("%s",ex.what());
+      ros::Duration(1.0).sleep(); **/
+      
+      
+	
   }
-}
+ }
+
 
 int main(int argc, char **argv)
 {
