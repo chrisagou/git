@@ -1,0 +1,72 @@
+robot:
+  robot_specifications:
+    - footprint:
+        footprint_specifications:
+          radius: 0.15
+          points:
+            []
+    - initial_pose:
+        x: 0
+        y: 0
+        theta: 0
+    - sonar:
+        sonar_specifications:
+          cone_angle: 0.8726646
+          max_range: 3
+          min_range: 0.3
+          frequency: 10
+          frame_id: sonar_1
+          pose:
+            x: 0
+            y: 0
+            theta: 0
+          noise:
+            noise_specifications:
+              noise_mean: 0
+              noise_std: 0
+    - sonar:
+        sonar_specifications:
+          cone_angle: 0.8726646
+          max_range: 3
+          min_range: 0.3
+          frequency: 10
+          frame_id: sonar_2
+          pose:
+            x: 0
+            y: 0
+            theta: 1.570796326795
+          noise:
+            noise_specifications:
+              noise_mean: 0
+              noise_std: 0
+    - sonar:
+        sonar_specifications:
+          cone_angle: 0.8726646
+          max_range: 3
+          min_range: 0.3
+          frequency: 10
+          frame_id: sonar_3
+          pose:
+            x: 0
+            y: 0
+            theta: 3.14159265359
+          noise:
+            noise_specifications:
+              noise_mean: 0
+              noise_std: 0
+    - sonar:
+        sonar_specifications:
+          cone_angle: 0.8726646
+          max_range: 3
+          min_range: 0.3
+          frequency: 10
+          frame_id: sonar_4
+          pose:
+            x: 0
+            y: 0
+            theta: -1.570796326795
+          noise:
+            noise_specifications:
+              noise_mean: 0
+              noise_std: 0
+    
